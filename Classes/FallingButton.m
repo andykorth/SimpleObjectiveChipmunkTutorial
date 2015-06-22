@@ -23,15 +23,15 @@ static cpFloat frand_unit(){return 2.0f*((cpFloat)rand()/(cpFloat)RAND_MAX) - 1.
 - (void)buttonClicked {
 	// Apply a random velcity change to the body when the button is clicked.
 	cpVect v = cpvmult(cpv(frand_unit(), frand_unit()), 300.0f);
-	body.vel = cpvadd(body.vel, v);
+	body.velocity = cpvadd(body.velocity, v);
 	
-	body.angVel += 5.0f*frand_unit();
+	body.angularVelocity += 5.0f*frand_unit();
 }
 
 - (void)updatePosition {
 	// ChipmunkBodies have a handy affineTransform property that makes working with Cocoa or Cocos2D a snap.
 	// This is all you have to do to move a button along with the physics!
-	button.transform = body.affineTransform;
+	button.transform = body.transform;
 	
 	// Alternatively, you could build a transform yourself from the body's position and rotation:
 	//	cpVect pos = body.pos;
@@ -61,12 +61,12 @@ static cpFloat frand_unit(){return 2.0f*((cpFloat)rand()/(cpFloat)RAND_MAX) - 1.
 		// You attach collision shapes to rigid bodies to define their shape and allow them to collide with other objects,
 		// and you can attach joints between rigid bodies to connect them together.
 		body = [[ChipmunkBody alloc] initWithMass:mass andMoment:moment];
-		body.pos = cpv(200.0f, 200.0f);
+		body.position = cpv(200.0f, 200.0f);
 		
 		// Chipmunk supports a number of collision shape types. See the documentation for more information.
 		// Because we are storing this into a local variable instead of an instance variable, we can use the autorelease constructor.
 		// We'll let the chipmunkObjects NSSet hold onto the reference for us.
-		ChipmunkShape *shape = [ChipmunkPolyShape boxWithBody:body width:SIZE height:SIZE];
+        ChipmunkShape *shape = [ChipmunkPolyShape boxWithBody:body width:SIZE height:SIZE radius: 0.0f];
 		
 		// The elasticity of a shape controls how bouncy it is.
 		shape.elasticity = 0.3f;
@@ -79,7 +79,7 @@ static cpFloat frand_unit(){return 2.0f*((cpFloat)rand()/(cpFloat)RAND_MAX) - 1.
 		
 		// Set data to point back to this object.
 		// That way you can get a reference to this object from the shape when you are in a callback.
-		shape.data = self;
+		shape.userData = self;
 		
 		// Keep in mind that you can attach multiple collision shapes to each rigid body, and that each shape can have
 		// unique properties. You can make the player's head have a different collision type for instance. This is useful

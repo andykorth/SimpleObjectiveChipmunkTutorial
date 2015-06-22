@@ -19,7 +19,8 @@ static NSString *borderType = @"borderType";
 	// This method adds four static line segment shapes to the space.
 	// Most 2D physics games end up putting all the gameplay in a box. This method just makes that easy.
 	// We'll tag these segment shapes with the borderType object. You'll see what this is for next.
-	[space addBounds:self.view.bounds thickness:10.0f elasticity:1.0f friction:1.0f layers:CP_ALL_LAYERS group:CP_NO_GROUP collisionType:borderType];
+    CGRect bounds = self.view.bounds;
+    [space addBounds:cpBBNew(bounds.origin.x, bounds.origin.y, CGRectGetMaxX(bounds), CGRectGetMaxY(bounds)) thickness:10.0f elasticity:1.0f friction:1.0f filter:CP_SHAPE_FILTER_ALL collisionType:borderType];
 	
 	// This adds a callback that happens whenever a shape tagged with the
 	// [FallingButton class] object and borderType objects collide.
@@ -59,11 +60,11 @@ static NSString *borderType = @"borderType";
 	// ChipmunkShape *border = GetShapeWithSecondCollisionType();
 	
 	// Lets log the data pointers just to make sure we are getting what we think we are.
-	NSLog(@"First object in the collision is %@ second object is %@.", buttonShape.data, border.data);
+	NSLog(@"First object in the collision is %@ second object is %@.", buttonShape.userData, border.userData);
 	
 	// When we created the collision shape for the FallingButton,
 	// we set the data pointer to point at the FallingButton it was associated with.
-	FallingButton *fb = buttonShape.data;
+	FallingButton *fb = buttonShape.userData;
 	
 	// Increment the touchedShapes counter on the FallingButton object.
 	// We'll decrement this in the separate callback.
@@ -107,7 +108,7 @@ static CGFloat frand(){return (CGFloat)rand()/(CGFloat)RAND_MAX;}
 	CHIPMUNK_ARBITER_GET_SHAPES(arbiter, buttonShape, border);
 	
 	// Decrement the counter on the FallingButton.
-	FallingButton *fb = buttonShape.data;
+	FallingButton *fb = buttonShape.userData;
 	fb.touchedShapes--;
 	
 	// If touchedShapes is 0, then we know the falling button isn't touching anything anymore.
