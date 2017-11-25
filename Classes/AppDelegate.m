@@ -20,7 +20,9 @@
 	AudioSessionSetProperty(kAudioSessionProperty_AudioCategory, sizeof(sessionCategory), &sessionCategory);
 	AudioSessionSetActive(TRUE);
 	
-	[window addSubview:viewController.view];
+	// [window addSubview:viewController.view];
+
+    [window setRootViewController:viewController];
 	[window makeKeyAndVisible];
 
 	return YES;
